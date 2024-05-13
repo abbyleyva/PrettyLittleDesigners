@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <title>Pomodoro Timer</title>
+</head>
+<body>
+    <div id="setupPage">
+        <h1>Set Ur Sesh Time Cutie ;)</h1>
+        <input type="number" id="timeInput" min="1" value="25" required> Minutes
+        <button id="startButton">Start</button>
+    </div>
+    <div id="timerPage" style="display: none;">
+        <div id="timer">25:00</div>
+        <button id="pauseResumeButton">Pause</button>
+        <button id="finishButton">Finish</button>
+    </div>
+    <div id="breakPage" style="display: none;">
+        <h1>Enjoy your break!</h1>
+        <div id="breakTimer">05:00</div>
+    </div>
+
+    <script src="timer.js"></script>
+</body>
+</html>
