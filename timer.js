@@ -2,6 +2,7 @@
 // document.getElementById('pauseResumeButton').addEventListener('click', togglePauseResume);
 // document.getElementById('finishButton').addEventListener('click', finishApp);
 
+
 // const setupPage = document.getElementById('setupPage');
 // const timerPage = document.getElementById('timerPage');
 // const breakPage = document.getElementById('breakPage');
