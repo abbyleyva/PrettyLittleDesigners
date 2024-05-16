@@ -1,4 +1,115 @@
 <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Timer App</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="timer-app">
+      <div class="timer-container">
+        <svg class="progress-ring" width="240" height="240">
+          <circle
+            class="progress-ring__circle"
+            stroke="lightgray"
+            stroke-width="15"
+            fill="transparent"
+            r="100"
+            cx="120"
+            cy="120"
+          />
+          <circle
+            class="progress-ring__circle progress"
+            stroke="#188B8A"
+            stroke-width="15"
+            fill="transparent"
+            r="100"
+            cx="120"
+            cy="120"
+            style="
+              transition: stroke-dashoffset 0.5s;
+              stroke-dasharray: 691;
+              stroke-dashoffset: 345.5;
+            "
+          />
+        </svg>
+        <img src="bloomie.png" alt="Cartoon Character" class="center-image" />
+      </div>
+      <div class="time-labels">
+        <div class="time-label">
+          <span class="label">WORK</span>
+          <span class="time" id="workTime">30:00</span>
+        </div>
+        <div class="time-label">
+          <span class="label">BREAK</span>
+          <span class="time" id="breakTime">5:00</span>
+        </div>
+      </div>
+      <button class="start-button">START</button>
+    </div>
+    <script src="timer.js"></script>
+  </body>
+</html>
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Timer App</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="timer-app">
+      <div class="settings-icon"> -->
+<!-- Optionally add a settings icon here -->
+<!-- </div>
+      <div class="timer-container">
+        <svg class="progress-ring" width="240" height="240">
+          <circle
+            class="progress-ring__circle"
+            stroke="lightgray"
+            stroke-width="15"
+            fill="transparent"
+            r="100"
+            cx="120"
+            cy="120"
+          />
+          <circle
+            class="progress-ring__circle progress"
+            stroke="#188B8A"
+            stroke-width="15"
+            fill="transparent"
+            r="100"
+            cx="120"
+            cy="120"
+            style="
+              transition: stroke-dashoffset 0.5s;
+              stroke-dasharray: 691;
+              stroke-dashoffset: 345.5;
+            "
+          />
+        </svg>
+        <img src="bloomie.png" alt="Cartoon Character" class="center-image" />
+        <div class="time-labels">
+          <div class="time-label">
+            <span class="label">WORK</span>
+            <span class="time" id="workTime">30:00</span>
+          </div>
+          <div class="time-label">
+            <span class="label">BREAK</span>
+            <span class="time" id="breakTime">5:00</span>
+          </div>
+        </div>
+        <button class="start-button">START</button>
+      </div>
+    </div>
+    <script src="timer.js"></script>
+  </body>
+</html> -->
+
+<!-- <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8" />
@@ -25,3 +136,4 @@
     <script src="timer.js"></script>
 </body>
 </html>
+ -->
