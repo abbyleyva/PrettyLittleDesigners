@@ -26,7 +26,6 @@
 //   }
 // });
 
-
 ///// FUNCTIONAL COUNTDOWN BUT NOT SYNC W TIMER.JS ///////////
 
 // const { app } = require('electron');
@@ -63,44 +62,43 @@
 //   }, 1000);
 // });
 
-
-const { app, ipcMain } = require('electron');
-const { menubar } = require('menubar');
+const { app, ipcMain } = require("electron");
+const { menubar } = require("menubar");
 
 const mb = menubar({
   preloadWindow: true,
   browserWindow: {
     width: 300,
-    height: 200,
+    height: 450,
     webPreferences: {
       nodeIntegration: true,
-      contextIsolation: false
-    }
-  }
+      contextIsolation: false,
+    },
+  },
 });
 
-mb.on('ready', () => {
-  console.log('Menubar app is ready.');
+mb.on("ready", () => {
+  console.log("Menubar app is ready.");
+  npm;
 });
 
 // Listen for timer update messages from the renderer process
-ipcMain.on('update-timer', (event, time) => {
+ipcMain.on("update-timer", (event, time) => {
   mb.tray.setTitle(time);
 });
 
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
+app.on("window-all-closed", () => {
+  if (process.platform !== "darwin") {
     app.quit();
   }
 });
 
-mb.on('after-create-window', () => {
+mb.on("after-create-window", () => {
   // Additional configurations or actions after window creation
-  console.log('Window created');
+  console.log("Window created");
 
   // Example: setting the window to null when closed
-  mb.window.on('closed', () => {
+  mb.window.on("closed", () => {
     mb.window = null;
   });
 });
-
