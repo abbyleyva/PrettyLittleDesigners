@@ -1,4 +1,4 @@
-const { app, ipcMain } = require("electron");
+const { app, ipcMain, powerSaveBlocker } = require("electron");
 const { menubar } = require("menubar");
 
 const mb = menubar({
@@ -9,17 +9,20 @@ const mb = menubar({
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
+      backgroundThrottling: false,   // needed to stop the timer from lagging when not in focus
     },
   },
 });
 
+let powerSaveBlockerId;
+
 mb.on("ready", () => {
   console.log("Menubar app is ready.");
-  npm;
+  powerSaveBlockerId = powerSaveBlocker.start('prevent-app-suspension');
 });
 
-// Listen for timer update messages from the renderer process
 ipcMain.on("update-timer", (event, time) => {
+  console.log(`Received time from renderer process: ${time}`); // Debugging log
   mb.tray.setTitle(time);
 });
 
@@ -30,10 +33,7 @@ app.on("window-all-closed", () => {
 });
 
 mb.on("after-create-window", () => {
-  // Additional configurations or actions after window creation
   console.log("Window created");
-
-  // Example: setting the window to null when closed
   mb.window.on("closed", () => {
     mb.window = null;
   });

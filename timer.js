@@ -1,116 +1,97 @@
 const { ipcRenderer } = require('electron');
 
-document.getElementById('startButton').addEventListener('click', startSessionTimer);
-document.getElementById('pauseResumeButton').addEventListener('click', togglePauseResume);
-document.getElementById('finishButton').addEventListener('click', finishApp);
+document.querySelector('.start-button').addEventListener('click', startSessionTimer);
 
-const setupPage = document.getElementById('setupPage');
-const timerPage = document.getElementById('timerPage');
-const breakPage = document.getElementById('breakPage');
-const sessionTimerDisplay = document.getElementById('timer');
-const breakTimerDisplay = document.getElementById('breakTimer');
-let sessionTime = 1500; // Default to 25 minutes in seconds
-let breakTime = 300; // 5 minutes for break
+let sessionTime = 30 * 60; // 30 minutes in seconds for work period
+let breakTime = 5 * 60; // 5 minutes in seconds for break period
+let isPaused = false;
+let endTime = null;
 let countdown = null;
-let isPaused = false; // Track whether the timer is paused
+let currentState = 'work'; // Possible states: 'work', 'break'
 
-function initializePages() {
-    setupPage.style.display = 'block'; // Only setupPage should be visible initially
-    timerPage.style.display = 'none';
-    breakPage.style.display = 'none';
-}
-
-document.addEventListener('DOMContentLoaded', initializePages);
+const FULL_DASH_ARRAY = 691; // Full length of the dash array for the circle
+const progressRing = document.querySelector('.progress-ring__circle.progress');
 
 function startSessionTimer() {
-    sessionTime = parseInt(document.getElementById('timeInput').value) * 60;
-    if (isNaN(sessionTime)) { // Validate input
-        alert('Please enter a valid number of minutes.');
-        return;
+    if (countdown !== null) {
+        cancelAnimationFrame(countdown);
     }
-    updateTimerDisplay(sessionTimerDisplay, sessionTime);
-    switchToPage(timerPage);
 
-    countdown = setInterval(() => {
-        sessionTime--;
-        updateTimerDisplay(sessionTimerDisplay, sessionTime);
-        if (sessionTime <= 0) {
-            clearInterval(countdown);
-            startBreakTimer();
-        }
-    }, 1000);
-    document.getElementById('pauseResumeButton').textContent = 'Pause';
+    if (currentState === 'work') {
+        sessionTime = 30 * 60; // Reset to 30 minutes
+    } else if (currentState === 'break') {
+        sessionTime = breakTime; // Reset to 5 minutes
+    }
+
+    endTime = Date.now() + sessionTime * 1000;
+    updateTimerDisplay(sessionTime);
+    runTimer();
     isPaused = false;
 }
 
-function startBreakTimer() {
-    updateTimerDisplay(breakTimerDisplay, breakTime);
-    switchToPage(breakPage);
+function runTimer() {
+    const now = Date.now();
+    const remainingTime = Math.max(0, Math.round((endTime - now) / 1000));
+    updateTimerDisplay(remainingTime);
 
-    countdown = setInterval(() => {
-        breakTime--;
-        updateTimerDisplay(breakTimerDisplay, breakTime);
-        if (breakTime <= 0) {
-            clearInterval(countdown);
-            breakTime = 300; // Reset break time for next loop
-            switchToPage(setupPage);
+    if (remainingTime > 0) {
+        countdown = requestAnimationFrame(runTimer);
+    } else {
+        cancelAnimationFrame(countdown);
+        if (currentState === 'work') {
+            console.log('Work period ended, starting break period');
+            currentState = 'break';
+            startSessionTimer();
+        } else if (currentState === 'break') {
+            console.log('Break period ended, starting work period');
+            currentState = 'work';
+            startSessionTimer();
         }
-    }, 1000);
+    }
 }
 
-function updateTimerDisplay(displayElement, time) {
+function updateTimerDisplay(time) {
     const minutes = Math.floor(time / 60);
     const seconds = time % 60;
     const formattedTime = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-    displayElement.textContent = formattedTime;
+    document.getElementById(currentState === 'work' ? 'workTime' : 'breakTime').textContent = formattedTime;
+
+    // Update the progress ring
+    updateProgressRing(time);
+
+    // Debugging log
+    console.log(`Updating timer display: ${formattedTime}`);
 
     // Send the formatted time to the main process
     ipcRenderer.send('update-timer', formattedTime);
 }
 
-function switchToPage(page) {
-    console.log("Switching to page:", page.id);
-    setupPage.style.display = 'none';
-    timerPage.style.display = 'none';
-    breakPage.style.display = 'none';
-    page.style.display = 'block';
+function updateProgressRing(time) {
+    const totalTime = currentState === 'work' ? sessionTime : breakTime; // Total time in seconds
+    const progress = time / totalTime;
+    const dashOffset = FULL_DASH_ARRAY * progress;
+
+    progressRing.style.strokeDashoffset = dashOffset;
+
+    // Debugging log
+    console.log(`Updating progress ring: ${dashOffset}`);
 }
 
 function togglePauseResume() {
     if (!isPaused) {
-        clearInterval(countdown);
-        countdown = null;
-        document.getElementById('pauseResumeButton').textContent = 'Resume';
+        cancelAnimationFrame(countdown);
+        document.querySelector('.start-button').textContent = 'Resume';
         isPaused = true;
     } else {
-        countdown = setInterval(() => {
-            if (timerPage.style.display === 'block') {
-                sessionTime--;
-                updateTimerDisplay(sessionTimerDisplay, sessionTime);
-                if (sessionTime <= 0) {
-                    clearInterval(countdown);
-                    startBreakTimer();
-                }
-            } else if (breakPage.style.display === 'block') {
-                breakTime--;
-                updateTimerDisplay(breakTimerDisplay, breakTime);
-                if (breakTime <= 0) {
-                    clearInterval(countdown);
-                    breakTime = 300; // Reset break time for next loop
-                    switchToPage(setupPage);
-                }
-            }
-        }, 1000);
-        document.getElementById('pauseResumeButton').textContent = 'Pause';
+        endTime = Date.now() + sessionTime * 1000;
+        runTimer();
+        document.querySelector('.start-button').textContent = 'Pause';
         isPaused = false;
     }
 }
 
 function finishApp() {
-    clearInterval(countdown);
-    timerPage.style.display = 'none';
-    breakPage.style.display = 'none';
-    setupPage.style.display = 'block';
+    cancelAnimationFrame(countdown);
     document.body.innerHTML = '<h1>Session Finished!</h1>';
     setTimeout(() => {
         window.close(); // Close the window or redirect as needed

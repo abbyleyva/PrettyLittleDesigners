@@ -39,9 +39,20 @@ html {
 }
 
 .progress-ring__circle {
-  transition: stroke-dashoffset 0.5s;
+  transition: stroke-dashoffset 0.35s;
+  /*transform: rotate(0deg);  Rotate the circle so the progress starts at the top */
   transform-origin: 50% 50%;
 }
+
+.progress {
+  stroke: #188B8A; /* The color that fills the ring */
+}
+
+.progress-ring {
+  stroke: lightgray; /* The initial grey color */
+}
+
+
 
 .center-image {
   width: 60%; /* Adjust based on actual size */
@@ -125,4 +136,19 @@ html {
 
 .start-button:hover {
   background-color: #115f5e;
+}
+
+#menuBar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background-color: #333;
+  color: white;
+  text-align: center;
+  padding: 10px 0;
+}
+
+#menuBarTimer {
+  font-size: 1.5em;
+  font-weight: bold;
 }
