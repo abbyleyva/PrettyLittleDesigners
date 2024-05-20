@@ -12,9 +12,9 @@ Prerequisites
 git clone https://github.com/abbyleyva/PrettyLittleDesigners.git
 3. Navigate to the Project Directory:
 cd PrettyLittleDesigners
-4. Install Dependencies:
+4. Install Dependencies: 
 xcode-select --install
 npm install electron
 npm install
-6. Run the Application
+6. Run the Application: 
 npm start
