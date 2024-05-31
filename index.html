@@ -34,19 +34,63 @@
             "
           />
         </svg>
-        <img src="bloomie.png" alt="Cartoon Character" class="center-image" />
+        <img
+          src="bloomie.png"
+          alt="Cartoon Character"
+          class="center-image"
+          id="centralImage"
+        />
       </div>
-      <div class="time-labels">
-        <div class="time-label">
-          <span class="label">WORK</span>
-          <span class="time" id="workTime">30:00</span>
+      <div class="initial-view">
+        <div class="time-labels">
+          <div class="time-label">
+            <span class="label">WORK</span>
+            <input type="number" id="workTimeInput" value="30" min="1" /> min
+          </div>
+          <div class="time-label">
+            <span class="label">BREAK</span>
+            <input type="number" id="breakTimeInput" value="5" min="1" /> min
+          </div>
         </div>
-        <div class="time-label">
-          <span class="label">BREAK</span>
-          <span class="time" id="breakTime">5:00</span>
+        <button class="start-button">START</button>
+      </div>
+      <div class="running-view" style="display: none">
+        <div class="time-display">
+          <span id="timeRemaining">30:00</span>
+        </div>
+        <div class="button-row">
+          <button class="flow-button">FLOW</button>
+          <button class="pause-button">PAUSE</button>
+          <button class="add-time-button">+ 5:00</button>
+        </div>
+        <div class="end-session-row">
+          <button class="end-session-button">END SESSION</button>
         </div>
       </div>
-      <button class="start-button">START</button>
+      <div class="congratulatory-view" style="display: none">
+        <div class="time-display">
+          <span id="timeRemaining">0:00</span>
+        </div>
+        <p>
+          You've completed your work session! Click "Finish" to start your break.
+        </p>
+        <div class="button-row">
+          <button class="flow-button">FLOW</button>
+          <button class="finish-button">FINISH</button>
+          <button class="add-time-button">+ 5:00</button>
+        </div>
+      </div>
+      <div class="finish-break-view" style="display: none">
+        <div class="time-display">
+          <span id="timeRemaining">0:00</span>
+        </div>
+        <p>
+          You've completed your break session. Click "Finish Break" to start your work session.
+        </p>
+        <div class="button-row">
+          <button class="finish-break-button">Finish Break</button>
+        </div>
+      </div>
     </div>
     <script src="timer.js"></script>
   </body>

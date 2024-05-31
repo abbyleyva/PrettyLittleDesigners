@@ -1,3 +1,4 @@
+/* General styles for the body and html to ensure full-screen layout with no overflow */
 body,
 html {
   height: 100%;
@@ -7,69 +8,95 @@ html {
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: hidden; /* Prevents scrolling */
 }
 
+/* Main container for the app */
 .timer-app {
-  width: 300px;
-  height: 95vh;
-  /* position: relative; */
+  width: 100vw; /* Uses the full width of the viewport */
+  height: 95vh; /* Uses 95% of the viewport height */
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 20px 0;
   box-sizing: border-box;
+  overflow: hidden; /* Ensures no internal scrolling */
 }
 
+/* Container for the timer visualization and image */
 .timer-container {
-  background-color: #fff;
-  border-radius: 50%;
-  width: 80%;
-  height: 80%;
+  position: relative; /* Added for proper positioning */
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
+  width: 80%;
+  aspect-ratio: 1; /* Keeps the width and height equal */
+  margin: 0 auto; /* Center horizontally */
+  background-color: #fff;
+  border-radius: 50%; /* Makes it circular */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0);
-  position: relative;
+  overflow: hidden;
 }
 
+/* Styles for the progress ring SVG */
 .progress-ring {
-  transform: rotate(-90deg);
+  width: 100%;
+  height: 100%;
   position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-90deg); /* Centering and rotation */
 }
 
 .progress-ring__circle {
   transition: stroke-dashoffset 0.35s;
-  /*transform: rotate(0deg);  Rotate the circle so the progress starts at the top */
   transform-origin: 50% 50%;
 }
 
 .progress {
-  stroke: #188B8A; /* The color that fills the ring */
+  stroke: #188b8a; /* Color for the progress */
 }
 
 .progress-ring {
-  stroke: lightgray; /* The initial grey color */
+  stroke: lightgray; /* Background color of the ring */
 }
 
-
-
+/* Style for the central image within the timer */
 .center-image {
-  width: 60%; /* Adjust based on actual size */
+  width: 60%;
   z-index: 10;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Style for the time display in the running view */
+.time-display {
+  font-size: 40px;
+  font-weight: bold;
+  margin-top: 30px;
+}
+
+/* Styling for the initial view and running view sections */
+.initial-view,
+.running-view,
+.congratulatory-view,
+.finish-break-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 300px;
 }
 
 .time-labels {
-  margin-top: 80%;
+  margin-top: 10px;
   display: flex;
   justify-content: space-between;
-  /* position: absolute; */
   width: calc(100% - 80px);
   padding: 0 20px;
-  /* bottom: 25px; */
-  /* margin-top: -40px; */
-  position: absolute;
-  /* top: 70%; */
 }
 
 .time-label {
@@ -77,67 +104,176 @@ html {
 }
 
 .label {
-  display: block;
   font-size: 12px;
   color: #9797aa;
   margin-bottom: 10px;
 }
 
-.time {
-  display: block;
-  font-size: 28px;
-  font-weight: bold;
+.congratulatory-view p,
+.finish-break-view p {
+  justify-content: center;
+  text-align: center;
+  display: flex;
+  color: #8c8ca1; /* Dark grey text color for good readability */
+  font-size: 14px; /* Slightly smaller font size than the main message */
+  margin-top: 10px;
 }
 
-.start-button {
-  width: 50%;
-  padding: 18px;
+input[type="number"] {
+  width: 60px;
+  font-size: 28px;
+  text-align: center;
+  font-weight: bold;
+  border: none;
+  border-bottom: 2px solid #188b8a;
+  margin-right: 5px;
+}
+
+/* Styles for all buttons */
+.start-button,
+.pause-button,
+.finish-button,
+.finish-break-button,
+.skip-break-button {
+  width: auto;
+  padding: 16px 24px;
   font-size: 20px;
+  font-weight: bold;
+  color: #fff;
+  background-color: #188b8a;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.flow-button,
+.add-time-button {
+  width: auto;
+  padding: 12px;
+  font-size: 12px;
   font-weight: bold;
   color: #fff;
   background-color: #188b8a;
   border: none;
   border-radius: 30px;
   cursor: pointer;
-  /* position: absolute; */
-  margin-top: 100px;
-  /* bottom: -30px; Adjust as needed */
+  margin-top: 20px;
 }
 
-.secondary-button {
-  width: 50%;
-  padding: 18px;
-  font-size: 14px;
+.end-session-button {
+  width: auto;
+  padding: 12px;
+  font-size: 12px;
   font-weight: bold;
-  color: #8c8ca1;
-  background-color: #fff;
-  border: #d6e0e0;
-  border-radius: 30px;
-  cursor: pointer;
-  /* position: absolute; */
-  margin-top: 100px;
-  /* bottom: -30px; Adjust as needed */
-}
-
-.tertiary-button {
-  width: 50%;
-  padding: 18px;
-  font-size: 14px;
-  font-weight: bold;
-  color: #8c8ca1;
-  background-color: transparent;
+  color: #fff;
+  background-color: #188b8a;
   border: none;
-  border-radius: 30px;
   cursor: pointer;
-  /* position: absolute; */
-  margin-top: 100px;
-  /* bottom: -30px; Adjust as needed */
+  margin-top: 20px;
+  justify-content: center;
+  margin: 0 auto;
+  text-align: center;
 }
 
-.start-button:hover {
+/* Hover styles for buttons */
+.start-button:hover,
+.pause-button:hover,
+.finish-button:hover,
+.finish-break-button:hover,
+.skip-break-button:hover,
+.flow-button:hover,
+.add-time-button:hover,
+.end-session-button:hover {
   background-color: #115f5e;
 }
 
+/* Special styles for the pause button in running view */
+.running-view .pause-button {
+  background-color: #188b8a;
+}
+
+.running-view .pause-button:hover {
+  background-color: #115f5e;
+}
+
+.congratulatory-view .finish-button {
+  background-color: #188b8a;
+}
+
+.congratulatory-view .finish-button:hover {
+  background-color: #115f5e;
+}
+
+.finish-break-view .finish-break-button {
+  background-color: #188b8a;
+}
+
+.finish-break-view .finish-break-button:hover {
+  background-color: #115f5e;
+}
+
+.skip-break-view .skip-break-button {
+  background-color: #188b8a;
+}
+
+.skip-break-view .skip-break-button:hover {
+  background-color: #115f5e;
+}
+
+/* Style for the button row in running view */
+.button-row {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 100%;
+}
+
+.end-session-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+/* Style adjustments for adding time, flow, and end session buttons */
+.running-view .add-time-button,
+.running-view .flow-button,
+.congratulatory-view .add-time-button,
+.congratulatory-view .flow-button {
+  background-color: #fff;
+  color: #8c8ca1;
+  border: 2px solid #8c8ca1;
+  width: auto;
+  padding: 12px;
+  cursor: pointer;
+}
+
+.running-view .end-session-button {
+  background: none; /* Removes background color */
+  color: #8c8ca1; /* Adds a red color to distinguish it as an actionable item */
+  border: none;
+  cursor: pointer;
+  padding: 12px;
+  margin-top: 20px; /* Ensure margin top for spacing */
+  text-decoration: underline; /* Underline to indicate it's clickable */
+  font-size: 12px; /* Adjust font size for better visibility */
+  text-align: center;
+  margin: 0 auto;
+}
+
+.running-view .add-time-button:hover,
+.running-view .flow-button:hover,
+.congratulatory-view .add-time-button:hover,
+.congratulatory-view .flow-button:hover {
+  background-color: #f0f0f0;
+}
+
+.running-view .end-session-button:hover {
+  color: #666675;
+}
+
+/* Style for the menubar timer */
 #menuBar {
   position: fixed;
   top: 0;
