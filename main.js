@@ -66,3 +66,33 @@ ipcMain.on('break-work-trans', () => {
     mb.tray.setTitle('Work Time!');
   }
 });
+
+
+// // hardware
+// const {BrowserWindow } = require('electron');
+// const path = require('path');
+// const { SerialPort } = require('serialport');
+
+
+// // Handle lifting phone
+// ipcMain.on('phone-lift', () => {
+//   if (mb.window) {
+//     mb.window.setTitle('Timer App');
+//     mb.tray.setTitle('Put Phone Back!');
+//   }
+// });
+
+// // Initializing the USB port
+// const port = new SerialPort({ path: '/dev/tty.usbmodem21201', baudRate: 9600 }); //On terminal, ls/dev/tty.*
+// const Readline = require('@serialport/parser-readline');
+
+// // Listening to Serial Data
+// port.on('data', (data) => {
+//     console.log('Received data:', data);
+//     mb.window.webContents.send('Received data', data)
+//   });
+
+
+// app.on('window-all-closed', () => {
+//   if (process.platform !== 'darwin') app.quit();
+// });
