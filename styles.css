@@ -29,8 +29,8 @@ html {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 80%;
-  aspect-ratio: 1; /* Keeps the width and height equal */
+  width: 240px;
+  height: 240px;
   margin: 0 auto; /* Center horizontally */
   background-color: #fff;
   border-radius: 50%; /* Makes it circular */
@@ -73,22 +73,24 @@ html {
 
 /* Style for the time display in the running view */
 .time-display {
-  font-size: 40px;
+  font-size: 25px;
   font-weight: bold;
-  margin-top: 30px;
+  padding-top: 10px;
 }
 
 /* Styling for the initial view and running view sections */
 .initial-view,
 .running-view,
 .congratulatory-view,
-.finish-break-view {
+.finish-break-view,
+.flow-view {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   width: 100%;
   max-width: 300px;
+  max-height: 200px;
 }
 
 .time-labels {
@@ -110,13 +112,15 @@ html {
 }
 
 .congratulatory-view p,
-.finish-break-view p {
+.finish-break-view p,
+.flow-view p {
   justify-content: center;
   text-align: center;
   display: flex;
   color: #8c8ca1; /* Dark grey text color for good readability */
-  font-size: 14px; /* Slightly smaller font size than the main message */
-  margin-top: 10px;
+  font-size: 12px; /* Slightly smaller font size than the main message */
+  margin-bottom: 1px;
+  max-width: 280px;
 }
 
 input[type="number"] {
@@ -134,7 +138,8 @@ input[type="number"] {
 .pause-button,
 .finish-button,
 .finish-break-button,
-.skip-break-button {
+.skip-break-button,
+.stop-flow-button {
   width: auto;
   padding: 16px 24px;
   font-size: 20px;
@@ -144,7 +149,7 @@ input[type="number"] {
   border: none;
   border-radius: 50px;
   cursor: pointer;
-  margin-top: 20px;
+  margin-top: 15px;
 }
 
 .flow-button,
@@ -158,7 +163,7 @@ input[type="number"] {
   border: none;
   border-radius: 30px;
   cursor: pointer;
-  margin-top: 20px;
+  margin-top: 15px;
 }
 
 .end-session-button {
@@ -170,7 +175,8 @@ input[type="number"] {
   background-color: #188b8a;
   border: none;
   cursor: pointer;
-  margin-top: 20px;
+  margin-top: 10px;
+  margin-bottom: 20px;
   justify-content: center;
   margin: 0 auto;
   text-align: center;
@@ -221,6 +227,14 @@ input[type="number"] {
   background-color: #115f5e;
 }
 
+.flow-view .stop-flow-button {
+  background-color: #188b8a;
+}
+
+.flow-view .stop-flow-button:hover {
+  background-color: #115f5e;
+}
+
 /* Style for the button row in running view */
 .button-row {
   display: flex;
@@ -255,7 +269,8 @@ input[type="number"] {
   border: none;
   cursor: pointer;
   padding: 12px;
-  margin-top: 20px; /* Ensure margin top for spacing */
+  margin-top: 10px;
+  margin-bottom: 20px; /* Ensure margin top for spacing */
   text-decoration: underline; /* Underline to indicate it's clickable */
   font-size: 12px; /* Adjust font size for better visibility */
   text-align: center;

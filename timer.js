@@ -7,6 +7,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const endSessionButton = document.querySelector(".end-session-button");
   const finishButton = document.querySelector(".finish-button");
   const addTimeButton = document.querySelector(".add-time-button"); // Select the +5 button ADDED TODAYS
+  const flowButton = document.querySelector(".flow-button");
+  const stopFlowButton = document.querySelector(".stop-flow-button");
 
   startButton.addEventListener("click", () => startSessionTimer(false)); // Starting work session
   finishButton.addEventListener("click", () => startSessionTimer(true)); // acts as if break NO
@@ -14,6 +16,8 @@ document.addEventListener("DOMContentLoaded", () => {
   pauseButton.addEventListener("click", togglePauseResume);
   endSessionButton.addEventListener("click", finishApp);
   addTimeButton.addEventListener("click", addFiveMinutes); // Add event listener for +5 button ADDED TODAYS
+  flowButton.addEventListener("click", showFlowView);
+  stopFlowButton.addEventListener("click", finishApp);
 
   initializeProgressRing();
   updateProgressRing();
@@ -23,6 +27,7 @@ let countdown = null;
 let isPaused = false;
 let endTime = null;
 let currentState = "work"; // 'work' or 'break'
+let receivedData = null; // Store received data
 const FULL_DASH_ARRAY = 691;
 const progressRing = document.querySelector(".progress-ring__circle.progress");
 
@@ -69,9 +74,11 @@ function updateViewForState(state) {
   }
 }
 
-function updateImageForState(state) {
+function updateImageForState(state, customImage = null) {
   const imageElement = document.getElementById("centralImage");
-  if (state === "break") {
+  if (customImage) {
+    imageElement.src = customImage; // Use custom image if provided
+  } else if (state === "break") {
     imageElement.src = "bloomie-rest.png"; // Specify the image for break sessions
   } else {
     imageElement.src = "bloomie.png"; // Specify the image for work sessions
@@ -87,14 +94,26 @@ function runTimer() {
     countdown = requestAnimationFrame(runTimer);
   } else if (secondsLeft === 0) {
     console.log(`Timer reached 0: currentState = ${currentState}`); // Debugging log
-    updateTimerDisplay(secondsLeft)
+    updateTimerDisplay(secondsLeft);
     if (currentState === "work") {
       showCongratulatoryScreen();
-      ipcRenderer.send('work-break-trans');
+      ipcRenderer.send("work-break-trans");
     }
     if (currentState === "break") {
       showFinishBreakScreen();
-      ipcRenderer.send('break-work-trans');
+      ipcRenderer.send("break-work-trans");
+      // if (receivedData == 48) { // Check the stored received data
+      //   console.log("Break time is up and data is 48, changing image and sending phone-lift.");
+      //   updateImageForState("work", "bloomie-mad.png");
+      //   ipcRenderer.send("phone-lift");
+      // } 
+      // if (receivedData == 49) {
+      //   showFinishBreakScreen();
+      //   ipcRenderer.send("break-work-trans");
+      // } else {
+      //   showFinishBreakScreen();
+      //   ipcRenderer.send("break-work-trans");
+      // }
     }
   }
 }
@@ -105,12 +124,12 @@ function updateTimerDisplay(seconds) {
   const formattedTime = `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
   document.getElementById("timeRemaining").textContent = formattedTime;
   updateProgressRing(seconds);
-  ipcRenderer.send('update-timer', formattedTime); // Send formatted time to main process
+  ipcRenderer.send("update-timer", formattedTime); // Send formatted time to main process
 }
 
 function togglePauseResume() {
   const pauseButton = document.querySelector(".pause-button");
-  
+
   if (currentState === "break") {
     showFinishBreakScreen();
   } else {
@@ -130,7 +149,6 @@ function togglePauseResume() {
   }
 }
 
-
 function showCongratulatoryScreen() {
   cancelAnimationFrame(countdown);
   const imageElement = document.getElementById("centralImage");
@@ -145,13 +163,21 @@ function showFinishBreakScreen() {
   imageElement.src = "bloomie-rest.png"; // Adjust the image path as needed
   document.querySelector(".running-view").style.display = "none";
   document.querySelector(".finish-break-view").style.display = "flex"; // Ensure you have this view setup in HTML
-  
+
   // Reset the progress ring to fully close it
   const progressRing = document.querySelector(".progress-ring__circle.progress");
   const circumference = progressRing.r.baseVal.value * 2 * Math.PI;
   progressRing.style.strokeDashoffset = 0; // Fully closes the ring
 }
 
+function showFlowView() {
+  cancelAnimationFrame(countdown);
+  const imageElement = document.getElementById("centralImage");
+  imageElement.src = "bloomie-flow.png"; // Adjust the image path as needed
+  document.querySelector(".running-view").style.display = "none";
+  document.querySelector(".flow-view").style.display = "flex";
+  document.querySelector(".progress-ring").style.display = "none";
+}
 
 function finishApp() {
   currentState = "work"; // IS THIS NEEDED?
@@ -160,6 +186,8 @@ function finishApp() {
   document.querySelector(".initial-view").style.display = "flex"; // Show the initial view
   document.querySelector(".running-view").style.display = "none"; // Hide the running view
   document.querySelector(".congratulatory-view").style.display = "none"; // Hide the congratulatory view
+  document.querySelector(".flow-view").style.display = "none"; // Hide the flow view
+  document.querySelector(".progress-ring").style.display = "flex";
   // Optionally reset inputs or other UI elements to their default states
   document.getElementById("workTimeInput").value = 30; // Default work time
   document.getElementById("breakTimeInput").value = 5; // Default break time
@@ -172,7 +200,7 @@ function finishApp() {
   }
 
   // Reset the menubar timer to the initial state
-  ipcRenderer.send('reset-menubar'); // Send reset message to the main process
+  ipcRenderer.send("reset-menubar"); // Send reset message to the main process
 }
 
 function resetTimer() {
@@ -202,13 +230,44 @@ function updateProgressRing(remainingTime) {
   progressRing.style.strokeDashoffset = offset;
 }
 
-//ADDED TODAYS
+// need to work on: 
 
-function addFiveMinutes() {
-  endTime += 5 * 60 * 1000; // Add 5 minutes to the endTime
-  initialTotalTime += 5 * 60; // Add 5 minutes to the total time
-  initializeProgressRing(); // Reinitialize the progress ring
+//  NOTES: before you run the command, your phone needs to be on the button! Don't use pause button when demonstrating phone
+ipcRenderer.on('Received data', (event, data) => {
+  console.log(data); // 123
+  console.log(isPaused); // 123
+  console.log(currentState);
+  receivedData = data; // Store received data
   const secondsLeft = Math.max(0, Math.round((endTime - Date.now()) / 1000));
-  updateTimerDisplay(secondsLeft); // Update the timer display with the new time
-  updateProgressRing(secondsLeft); // Update the progress ring with the new time
-}
+  if (currentState === "work") {
+    if (data == 48 && !isPaused) {
+      updateImageForState(currentState, "bloomie-sad.png");
+      togglePauseResume();
+      ipcRenderer.send("phone-lift");
+    }
+    if (data == 49 && isPaused) {
+      updateImageForState(currentState);
+      togglePauseResume();
+    }
+  } 
+  // if (currentState === "break" && secondsLeft === 0) {
+  //   if (data == 48) {
+  //     // This condition will be triggered in runTimer when the break time is up
+  //     console.log("Break is over and data is 48, changing image and sending phone-lift.");
+  //     updateImageForState("work", "bloomie-mad.png");
+  //     ipcRenderer.send("phone-lift");
+  //   }
+  // }
+});
+
+
+
+
+//maybe say not fully functional yet! proof of concept :) 
+// function addFiveMinutes() {
+//   endTime += 5 * 60 * 1000; // Add 5 minutes to the endTime
+//   const secondsLeft = Math.max(0, Math.round((endTime - Date.now()) / 1000));
+//   initializeProgressRing(); // Reinitialize the progress ring
+//   updateProgressRing(secondsLeft); // Update the progress ring with the new time
+//   updateTimerDisplay(secondsLeft); // Update the timer display with the new time
+// }
